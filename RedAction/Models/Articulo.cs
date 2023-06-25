@@ -30,7 +30,7 @@ namespace RedAction.Models
         public Seccion seccion { get; set; }
         [Display(Name = "Estado del Artículo")]
         [EnumDataType(typeof(EstadoArticulo))]
-        public EstadoArticulo estado { get; set; }
+        public EstadoArticulo? estado { get; set; }
         [Display(Name = "Observaciones")]
         public string observaciones { get; set; }
     }

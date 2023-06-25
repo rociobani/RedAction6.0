@@ -24,10 +24,10 @@ namespace RedAction.Models
         public string mail { get; set; }
         [Display(Name = "Tipo De Usuario")]
         [EnumDataType(typeof(TipoUsuario))]
-        public TipoUsuario tipo { get; set; }
+        public TipoUsuario? tipo { get; set; }
         [Display(Name = "Nombre De Usuario")]
-        public string nomUsuario { get; set; }
-        public string pass { get; set; }
+        public string? nomUsuario { get; set; }
+        public string? pass { get; set; }
 
         public List<Articulo>? ListaArticulos { get; set; }
 

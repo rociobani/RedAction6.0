@@ -18,7 +18,7 @@ namespace RedAction.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult MensajeError()
         {
             return View();
         }

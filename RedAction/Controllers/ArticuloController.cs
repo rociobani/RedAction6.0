@@ -21,8 +21,11 @@ namespace RedAction.Controllers
         // GET: Articulo
         public async Task<IActionResult> Index()
         {
-            var redActionDBContext = _context.Articulo.Include(a => a.autor);
-            return View(await redActionDBContext.ToListAsync());
+            var redActionDBContext = await _context.Articulo.Include(a => a.autor).ToListAsync(); // HAGO UNA LISTA POR AUTOR
+            var listaArticulos = redActionDBContext.Where(a => a.estado != EstadoArticulo.ESPERANDO_APROBACION).ToList(); // FILTRO SACANDO SACANDO ESPERANDO APROBACION
+                                                                                                                        // ver que pasa si el autor es el Administrador
+                                                                                                                        //ver el index que se modifico los botones                                                                                                                   // ver que pasa si el autor es el Administrador
+            return View(listaArticulos);
         }
 
         // GET: Articulo/Details/5
@@ -56,10 +59,11 @@ namespace RedAction.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AutorId,contenido,seccion,estado,observaciones")] Articulo articulo)
+        public async Task<IActionResult> Create([Bind("Id,AutorId,contenido,seccion,observaciones")] Articulo articulo)
         {
             if (ModelState.IsValid)
             {
+                articulo.estado = EstadoArticulo.BORRADOR;
                 _context.Add(articulo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

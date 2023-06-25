@@ -55,11 +55,18 @@ namespace RedAction.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,mail,tipo,nomUsuario,pass")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,mail")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
+                if (await UsuarioDuplicado(usuario.Dni))
+                {
+                    return RedirectToAction("MensajeError", "Home");
+                }
 
+                usuario.nomUsuario = usuario.Dni;
+                usuario.pass = usuario.Dni;
+                usuario.tipo = TipoUsuario.REDACTOR;
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -159,5 +166,29 @@ namespace RedAction.Controllers
         {
           return (_context.Usuario?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        private async Task<bool> UsuarioDuplicado(string dni)
+        {
+            var resultado = false;
+            var usuario = await _context.Usuario.Where(u => u.Dni.Equals(dni)).FirstOrDefaultAsync();
+            if (usuario != null)
+            {
+                resultado = true;
+            }
+
+            return resultado;
+        }
+
+        public async Task<bool> EsJefeDeRedaccion(int id)
+        {
+            var resultado = false;
+            var jdr = await _context.Usuario.FindAsync(id);
+            if (jdr != null && jdr.tipo == TipoUsuario.JEFE_DE_REDACCION)
+            {
+                resultado = true;
+            }
+
+            return resultado;
+        }
+
     }
 }
