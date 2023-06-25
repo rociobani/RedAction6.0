@@ -97,7 +97,7 @@ namespace RedAction.Controllers
                 articulo.estado = EstadoArticulo.BORRADOR;
                 _context.Add(articulo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ArticulosPropios));
             }
             ViewData["AutorId"] = new SelectList(_context.Usuario, "Id", "Dni", articulo.AutorId);
             return View(articulo);
@@ -191,7 +191,7 @@ namespace RedAction.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ArticulosPropios));
         }
 
         private bool ArticuloExists(int id)
