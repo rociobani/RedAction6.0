@@ -16,11 +16,13 @@ namespace RedAction.Controllers
         private readonly RedActionDBContext _context;
         //Agregamos el IdentityUser tanto en atributos como en Constructor
         private readonly UserManager<IdentityUser> _userManager;
+        private const string _avatarPerfil = "https://cdn.icon-icons.com/icons2/3446/PNG/512/account_profile_user_avatar_icon_219236.png";
 
         public UsuarioController(RedActionDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+
         }
 
 
@@ -72,18 +74,20 @@ namespace RedAction.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,mail")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,FotoPerfil")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
+                if (usuario.FotoPerfil == null)
+                {
+                    usuario.FotoPerfil = _avatarPerfil;
+                }
                 //TO-DO Falta modificar métodos de creación de usuario
                 if (await UsuarioDuplicado(usuario.Dni))
                 {
                     return RedirectToAction("MensajeError", "Home");
                 }
 
-                usuario.nomUsuario = usuario.Dni;
-                usuario.pass = usuario.Dni;
                 usuario.tipo = TipoUsuario.REDACTOR;
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();

@@ -28,9 +28,12 @@
                 <input asp-for="mail" class="form-control" />
                 <span asp-validation-for="mail" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="FotoPerfil" class="control-label"></label>
+                <input asp-for="FotoPerfil" class="form-control" />
+                <span asp-validation-for="FotoPerfil" class="text-danger"></span>
+            </div>
             <select asp-for="tipo" class="form-control" hidden><option selected="selected" value="REDACTOR">REDACTOR</option></select>
-            <input asp-for="nomUsuario" type="hidden" class="form-control" />
-            <input asp-for="pass" type="hidden" class="form-control" />
             <div class="form-group">
                 <input type="submit" value="Guardar cambios" class="btn btn-primary" />
             </div>
