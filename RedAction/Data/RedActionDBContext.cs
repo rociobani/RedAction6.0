@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RedAction.Models;
 
-    public class RedActionDBContext : DbContext
-    {
+    public class RedActionDBContext : IdentityDbContext
+{
         public RedActionDBContext (DbContextOptions<RedActionDBContext> options)
             : base(options)
         {

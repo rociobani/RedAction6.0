@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +14,16 @@ namespace RedAction.Controllers
     public class UsuarioController : Controller
     {
         private readonly RedActionDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuarioController(RedActionDBContext context)
+        public UsuarioController(RedActionDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+
+        [Authorize (Roles = "JEFE_DE_REDACCION")]
         // GET: Usuario
         public async Task<IActionResult> Index()
         {

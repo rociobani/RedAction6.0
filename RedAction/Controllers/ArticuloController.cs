@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,21 +14,50 @@ namespace RedAction.Controllers
     public class ArticuloController : Controller
     {
         private readonly RedActionDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ArticuloController(RedActionDBContext context)
+        public ArticuloController(RedActionDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+        [Authorize (Roles = "JEFE_DE_REDACCION")]
         // GET: Articulo
         public async Task<IActionResult> Index()
         {
-            var redActionDBContext = await _context.Articulo.Include(a => a.autor).ToListAsync(); // HAGO UNA LISTA POR AUTOR
-            var listaArticulos = redActionDBContext.Where(a => a.estado != EstadoArticulo.ESPERANDO_APROBACION).ToList(); // FILTRO SACANDO SACANDO ESPERANDO APROBACION
-                                                                                                                        // ver que pasa si el autor es el Administrador
-                                                                                                                        //ver el index que se modifico los botones                                                                                                                   // ver que pasa si el autor es el Administrador
-            return View(listaArticulos);
+            var lista = await _context.Articulo.ToListAsync(); 
+                                                                                                                             // ver que pasa si el autor es el Administrador
+            return View(lista);
         }
+
+        [Authorize(Roles = "REDACTOR")]
+        [HttpGet("Usuarios/ArticulosPropios")]
+        public async Task<IActionResult> ArticulosPropios()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || _context.Usuario == null)
+            {
+                return NotFound();
+            }
+
+            var lista = await _context.Articulo.Where(c => c.autor.mail == user.NormalizedEmail).ToListAsync();
+
+
+            return View("Index", lista);
+
+        }
+
+
+
+
+
+
+
+
+
+
 
         // GET: Articulo/Details/5
         public async Task<IActionResult> Details(int? id)
