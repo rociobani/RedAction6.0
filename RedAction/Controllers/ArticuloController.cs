@@ -50,7 +50,7 @@ namespace RedAction.Controllers
         // GET: Articulo/Create
         public IActionResult Create()
         {
-            ViewData["AutorId"] = new SelectList(_context.Usuario, "Id", "Dni");
+            ViewData["AutorId"] = new SelectList(_context.Usuario, "Id", "nombreCompleto");
             return View();
         }
 
