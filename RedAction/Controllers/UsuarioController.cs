@@ -74,21 +74,20 @@ namespace RedAction.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,FotoPerfil")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Dni,nombreCompleto,mail,tipo,FotoPerfil")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
-                if (usuario.FotoPerfil == null)
-                {
-                    usuario.FotoPerfil = _avatarPerfil;
-                }
+                
                 //TO-DO Falta modificar métodos de creación de usuario
                 if (await UsuarioDuplicado(usuario.Dni))
                 {
                     return RedirectToAction("MensajeError", "Home");
                 }
-
-                usuario.tipo = TipoUsuario.REDACTOR;
+                if (usuario.FotoPerfil == null)
+                {
+                    usuario.FotoPerfil = _avatarPerfil;
+                }
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -117,7 +116,7 @@ namespace RedAction.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Dni,nombreCompleto,mail,tipo,nomUsuario,pass")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Dni,nombreCompleto,mail,tipo,FotoPerfil")] Usuario usuario)
         {
             if (id != usuario.Id)
             {

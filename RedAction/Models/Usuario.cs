@@ -8,7 +8,7 @@ namespace RedAction.Models
     public class Usuario
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required(ErrorMessage = ErrorViewModel.CampoRequerido)]
         [MinLength(7, ErrorMessage = ErrorViewModel.CaracteresMinimos)]
