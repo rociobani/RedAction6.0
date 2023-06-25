@@ -105,9 +105,9 @@ namespace RedAction.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    _context.Update(usuario);
+                {   _context.Update(usuario);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -190,5 +190,28 @@ namespace RedAction.Controllers
             return resultado;
         }
 
+         private async Task<bool> CambioDni(int id, string dni)
+        {
+            var resultado = false;
+            var usuario = await _context.Usuario.FindAsync(id);
+            if (usuario != null && !usuario.Equals(dni))
+            {
+                resultado = true;
+            }
+            return resultado;
+        }
+
+        private async Task<bool> NoEsDniValido(int id, string dni)
+        {
+            var resultado = false;
+            var listaUsuarios = await _context.Usuario.ToListAsync();
+             foreach(Usuario u in listaUsuarios) { 
+                if(u.Dni.Equals(dni) && u.Id != id)
+                {
+                    resultado = true;
+                }
+            }
+            return resultado;
+        }
     }
 }
