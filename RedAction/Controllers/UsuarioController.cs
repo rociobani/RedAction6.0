@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +14,18 @@ namespace RedAction.Controllers
     public class UsuarioController : Controller
     {
         private readonly RedActionDBContext _context;
+        //Agregamos el IdentityUser tanto en atributos como en Constructor
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuarioController(RedActionDBContext context)
+        public UsuarioController(RedActionDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Usuario
+
+        // GET: Usuario/Index --> Como esto muestra la lista COMPLETA de usuarios, sólo quiero que lo vea el Jefe de Redaccion
+        [Authorize(Roles = "JDR")]
         public async Task<IActionResult> Index()
         {
               return _context.Usuario != null ? 
@@ -45,9 +52,19 @@ namespace RedAction.Controllers
         }
 
         // GET: Usuario/Create
-        public IActionResult Create()
+        // Modificamos los parámetros para que reciba un user (de tipo IdentityUser)
+        // Si el user es null --> Mensaje error
+        // Sino crea un nuevo usuario y le setea el email
+        public IActionResult Create(IdentityUser? user)
         {
-            return View();
+            if (user == null) return RedirectToAction("MensajeError", "Home");
+
+            Usuario usuario = new Usuario
+            {
+                mail = user.Email
+            };
+            
+            return View(usuario);
         }
 
         // POST: Usuario/Create
@@ -59,6 +76,7 @@ namespace RedAction.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TO-DO Falta modificar métodos de creación de usuario
                 if (await UsuarioDuplicado(usuario.Dni))
                 {
                     return RedirectToAction("MensajeError", "Home");

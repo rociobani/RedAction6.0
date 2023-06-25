@@ -26,6 +26,8 @@ namespace RedAction.Models
         [EnumDataType(typeof(TipoUsuario))]
         public TipoUsuario? tipo { get; set; }
         [Display(Name = "Nombre De Usuario")]
+        
+        //TO-DO Falta eliminar estos dos atributos que ya no necesitamos
         public string? nomUsuario { get; set; }
         public string? pass { get; set; }
 
